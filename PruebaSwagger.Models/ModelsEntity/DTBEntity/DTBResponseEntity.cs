@@ -1,9 +1,8 @@
-﻿using PruebaSwagger.Models.ModelsEntity;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace PruebaSwagger.Models.ModelsResponse
+namespace PruebaSwagger.Models.ModelsEntity.DTBEntity
 {
     public class DTBResponseEntity
     {

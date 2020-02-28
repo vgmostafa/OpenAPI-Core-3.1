@@ -1,6 +1,6 @@
 ﻿using Newtonsoft.Json;
 using PruebaSwagger.Models;
-using PruebaSwagger.Models.ModelsResponse;
+using PruebaSwagger.Models.ModelsEntity.DTBEntity;
 using System;
 using System.Collections.Generic;
 using System.Net.Http;
@@ -11,8 +11,8 @@ namespace PruebaSwagger.Integraciones
 {
     public class IntegracionOPEN
     {
-        //private static string urlConsulta = "http://esbp.corp.cablevision.com.ar:8000/customerManagement/";
-        private static string urlConsulta = "https://webgestionmoviltesting/servicesAPI.aspx?servicio=DTB&";
+        private static string urlConsulta = "http://esbp.corp.cablevision.com.ar:8000/customerManagement/";
+        //private static string urlConsulta = "https://webgestionmoviltesting/servicesAPI.aspx?servicio=DTB&";
         //static public ClientEntity getInformacionComercial(string idSuscriber, string IDdomicilio, string servicio)
         //{
         //    ClientEntity clienteById = new ClientEntity();
@@ -97,17 +97,20 @@ namespace PruebaSwagger.Integraciones
         //    }
         //}
 
-        static public DTBResponseEntity GetServiciosActivosForDTB(string idSuscriber, string IDdomicilio)
+        static public DTBRequestEntity GetServiciosActivosForDTB(string idSuscriber)
         {
             string jsonResponse = "";
             try
             {
-                string url = urlConsulta + "idSubscriber=" + idSuscriber + "&IDdomicilio=" + IDdomicilio;
+                //string url = urlConsulta + "idSubscriber=" + idSuscriber + "&IDdomicilio=" + IDdomicilio;
+                string url = urlConsulta + "products/installedBase?subscriberId=" + idSuscriber + "&isActive=true";
                 jsonResponse = Utilidades.GetResponse(url);
 
-                DTBResponseEntity response = JsonConvert.DeserializeObject<DTBResponseEntity>(jsonResponse);
-                return response;
-                
+                //DTBResponseEntity response = JsonConvert.DeserializeObject<DTBResponseEntity>(jsonResponse);
+
+                DTBRequestEntity dTBRequestEntity = JsonConvert.DeserializeObject<DTBRequestEntity>(jsonResponse);
+
+                return dTBRequestEntity;
 
                 //var serializer = new JavaScriptSerializer();
                 //serializer.RegisterConverters(new[] { new DynamicJsonConverter() });
@@ -125,7 +128,6 @@ namespace PruebaSwagger.Integraciones
                 //{
                 //    if (json.subscriptions.subscription[0].products.product[i].addressId.ToString() == IDdomicilio && json.subscriptions.subscription[0].products.product[i].productType != "FLOW APP")
                 //    {
-
                 //        jsonSalida += "{";
                 //        jsonSalida += "\"Servicio\":\"" + json.subscriptions.subscription[0].products.product[i].productType + "\",\n";
                 //        jsonSalida += "\"Equipos\": {\n";
@@ -168,7 +170,6 @@ namespace PruebaSwagger.Integraciones
                 //clienteIds.ServiceNumberType = tipo;
                 //return clienteIds;
             }
-
             catch (Exception ex)
             {
                 //WebGestionMovil.Common.Mailer.SendMail(WebGestionMovil.Common.Excepciones.Format(ex), "Error en la ejecución OPEN");

@@ -42,10 +42,10 @@ namespace PruebaSwagger.Business.DiagnosticoUnificado
         //    }
         //}
 
-        public static string Integraciones_DTB_Programado(string idSuscriber, string IDdomicilio)
-        {
-            ClientEntity dtb = Integraciones.Integracion_OPEN.GetServiciosActivosForDTB(idSuscriber, IDdomicilio);
-            return dtb.Json;
-        }
+        //public static string Integraciones_DTB_Programado(string idSuscriber, string IDdomicilio)
+        //{
+        //    ClientEntity dtb = Integraciones.Integracion_OPEN.GetServiciosActivosForDTB(idSuscriber, IDdomicilio);
+        //    return dtb.Json;
+        //}
     }
 }

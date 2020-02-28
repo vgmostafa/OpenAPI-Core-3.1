@@ -20,6 +20,9 @@ namespace PruebaSwagger
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllers();
+            //Configuracion para evitar CaseSensitive en los Json que retornan los Controllers
+            services.AddMvc().AddJsonOptions(options => options.JsonSerializerOptions.PropertyNamingPolicy = null);
+            //services.AddMvc().AddNewtonsoftJson();
 
             //Configuracion del servicio Swagger
             services.AddSwaggerGen(config => config.SwaggerDoc("V1", new OpenApiInfo()
