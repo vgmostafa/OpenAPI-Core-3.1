@@ -18,7 +18,6 @@ namespace PruebaSwagger.Business.Integraciones
         public static DTBResponseEntity Integracion_DTB_Programado(string idSuscriber, string IDdomicilio)
         {
             DTBRequestEntity dTBRequestEntity = IntegracionOPEN.GetServiciosActivosForDTB(idSuscriber);
-
             DTBResponseEntity dTBResponseEntity = IntegracionesBL.GetDTBResponseEntity(dTBRequestEntity, idSuscriber, IDdomicilio);
 
             return dTBResponseEntity;

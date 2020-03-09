@@ -52,6 +52,11 @@ namespace PruebaSwagger
                 endpoints.MapControllers();
             });
 
+            //app.UseMvc(routes => 
+            //{
+            //    routes.MapRoute("default", "{controller=Client}/{action=Index}/{id?}");
+            //});
+
             //Configuracion del Middelware
             app.UseSwagger();
             app.UseSwaggerUI(config =>

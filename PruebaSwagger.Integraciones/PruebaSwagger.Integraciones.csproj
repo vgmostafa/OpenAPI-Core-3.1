@@ -9,6 +9,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\PruebaSwagger.Common\PruebaSwagger.Common.csproj" />
     <ProjectReference Include="..\PruebaSwagger.Models\PruebaSwagger.Models.csproj" />
   </ItemGroup>
 

@@ -9,6 +9,11 @@ using PruebaSwagger.Models;
 using PruebaSwagger.Models.ModelsEntity;
 using PruebaSwagger.Models.ModelsEntity.DTBEntity;
 using PruebaSwagger.Business.Integraciones;
+using PruebaSwagger.Integraciones.ServiceRepository;
+using PruebaSwagger.Models.ModelsEntity.InformacionComercialEntity;
+using PruebaSwagger.Integraciones;
+using PruebaSwagger.Models.ModelsEntity.InformacionComercialEntity.ReturnData;
+using PruebaSwagger.Business.DiagnosticoUnificado;
 
 namespace PruebaSwagger.Controllers
 {
@@ -16,40 +21,64 @@ namespace PruebaSwagger.Controllers
     [ApiController]
     public class ClientController : ControllerBase
     {
-        [Route("GetVecino")]
-        [HttpGet]
-        public ActionResult<Vecinos> GetVecino()
-        {
-            return Ok(new Vecinos()
-            {
-                element = new Element()
-                {
-                    elementName = "Prueba",
-                    elementRole = "Prueba",
-                    relationshipType = "Prueba"
-                },
-                error = new Error()
-                {
-                    code = "Prueba error",
-                    description = "Descripcion error",
-                    message = "mensaje error"
-                }
-            });
-        }
+        //[Route("GetVecino")]
+        //[HttpGet]
+        //public ActionResult<Vecinos> GetVecino()
+        //{
+        //    return Ok(new Vecinos()
+        //    {
+        //        element = new Element()
+        //        {
+        //            elementName = "Prueba",
+        //            elementRole = "Prueba",
+        //            relationshipType = "Prueba"
+        //        },
+        //        error = new Error()
+        //        {
+        //            code = "Prueba error",
+        //            description = "Descripcion error",
+        //            message = "mensaje error"
+        //        }
+        //    });
+        //}
 
-        [Route("GetDTB")]
+        //[Route("ConsultaDTB")]
+        //[HttpGet]
+        //public ActionResult<DTBResponseEntity> GetDTB(string idSuscriber, string IDdomicilio)
+        //{
+        //    DTBResponseEntity dTBResponseEntity = new DTBResponseEntity();
+        //    //"9987991", "33186068"
+        //    //1789977, 33228538
+        //    try
+        //    {dTBResponseEntity = Business.Integraciones.Integraciones.Integracion_DTB_Programado(idSuscriber, IDdomicilio);
+        //        dTBResponseEntity = Business.Integraciones.Integraciones.Integracion_DTB_Programado(idSuscriber, IDdomicilio);
+        //    }
+        //    catch (Exception e)
+        //    {
+        //        return StatusCode(400);
+        //    }
+
+        //    return dTBResponseEntity;
+        //}
+
+        [Route("ConsultaDTB")]
         [HttpGet]
-        public ActionResult<DTBResponseEntity> GetDTB(string idSuscriber, string IDdomicilio)
+        public ActionResult<DTBResponseEntity> GetDTB(string idSubscriber, string idDomicilio)
         {
-            //DTBResponseEntity dTBResponseEntity = IntegracionOPEN.GetServiciosActivosForDTB(idSuscriber, IDdomicilio);
-            //"9987991", "33186068"
-            //1789977, 33228538
-            DTBResponseEntity dTBResponseEntity = Business.Integraciones.Integraciones.Integracion_DTB_Programado(idSuscriber, IDdomicilio);
+            DTBResponseEntity dTBResponseEntity = new DTBResponseEntity();
+            dTBResponseEntity = Business.Integraciones.Integraciones.Integracion_DTB_Programado(idSubscriber, idDomicilio);
+
             return dTBResponseEntity;
         }
 
-        [Route("GetEquipos")]
+        [Route("ConsultaDiagnosticoUnificado")]
         [HttpGet]
-        public ActionResult<DTBEquipoReferencia> GetEquipo() => new DTBEquipoReferencia() { };
+        public ActionResult<ICReturnData> GetDiagnosticoUnificado(string idSubscriber, string idDomicilio, string servicio)
+        {
+            ICReturnData iCReturnData = new ICReturnData();
+            iCReturnData = DiagnosticoUnificadoBusiness.GetDiagnostico(idSubscriber, idDomicilio, servicio);
+
+            return iCReturnData;
+        }
     }
 }

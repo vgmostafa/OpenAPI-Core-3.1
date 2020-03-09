@@ -1,6 +1,10 @@
 ﻿using Newtonsoft.Json;
+using PruebaSwagger.Integraciones.Formateador;
+using PruebaSwagger.Integraciones.ServiceRepository;
 using PruebaSwagger.Models;
 using PruebaSwagger.Models.ModelsEntity.DTBEntity;
+using PruebaSwagger.Models.ModelsEntity.InformacionComercialEntity;
+using PruebaSwagger.Models.ModelsEntity.InformacionComercialEntity.ReturnData;
 using System;
 using System.Collections.Generic;
 using System.Net.Http;
@@ -13,167 +17,46 @@ namespace PruebaSwagger.Integraciones
     {
         private static string urlConsulta = "http://esbp.corp.cablevision.com.ar:8000/customerManagement/";
         //private static string urlConsulta = "https://webgestionmoviltesting/servicesAPI.aspx?servicio=DTB&";
-        //static public ClientEntity getInformacionComercial(string idSuscriber, string IDdomicilio, string servicio)
-        //{
-        //    ClientEntity clienteById = new ClientEntity();
-        //    ClientEntity ServiciosActivos = new ClientEntity();
-        //    ClientEntity clienteAddress = new ClientEntity();
-        //    ClientEntity clienteMail = new ClientEntity();
-        //    ClientEntity clientePhone = new ClientEntity();
 
-        //    //Parallel.Invoke(() =>
-        //    //{
-        //    //    clienteById = GetClienteByID(idSuscriber, IDdomicilio);
-        //    //});
-        //    //    () =>
-        //    //    {
-        //    //        ServiciosActivos = GetServiciosActivosByID(idSuscriber, IDdomicilio);
-        //    //    },
+        public static ICReturnData GetInformacionComercial(string idSubscriber, string idDomicilio, string servicio)
+        {
+            ICReturnData iCReturnData = new ICReturnData();
+            ICResponseClient iCResponseClient = new ICResponseClient();
+            DTBRequestEntity dTBRequestEntity = new DTBRequestEntity();
+            ICResponseAddress iCResponseAddress = new ICResponseAddress();
+            ICResponseMail iCResponseMail = new ICResponseMail();
+            try
+            {
+                Parallel.Invoke(() => { iCResponseClient = OPENServiceRepository.GetClienteByID(idSubscriber, idDomicilio); },
+                                () => { dTBRequestEntity = OPENServiceRepository.GetServiciosActivosByID(idSubscriber, idDomicilio); },
+                                () => { iCResponseAddress = OPENServiceRepository.GetAddress(idDomicilio); },
+                                () => { iCResponseMail = OPENServiceRepository.GetMailbyId(idSubscriber); });
 
-        //    //    () =>
-        //    //    {
-        //    //        clienteAddress = GetAddress(IDdomicilio);
-        //    //    },
+                iCReturnData = FormateadorOPEN.GetInformacionComercial(iCResponseClient, dTBRequestEntity, iCResponseAddress, iCResponseMail, idDomicilio); 
+            }
+            catch (Exception e)
+            {
+                throw;
+            }
 
-        //    //    () =>
-        //    //    {
-        //    //        clienteMail = GetMailbyID(idSuscriber);
-        //    //    },
-
-        //    //    () =>
-        //    //    {
-        //    //        clientePhone = GetPhonebyID(idSuscriber);
-        //    //    });
-
-
-        //    ClientEntity Final = new ClientEntity();
-
-        //    if (servicio == "")
-        //    {
-        //        return ServiciosActivos;
-        //    }
-        //    else
-        //    {
-
-        //        Final = Formateadores.Formateador_OPEN.RespuestaTest(clienteById, clienteAddress.Json, clienteMail.Json, clientePhone.Json, ServiciosActivos, IDdomicilio);
-
-        //        return Final;
-
-        //    }
-
-        //}
-
-        //private static internal ClientEntity GetClienteByID(string idSuscriber, string IDdomicilio)
-        //{
-        //    string jsonResponse = "";
-        //    try
-        //    {
-        //        HttpClient client = new HttpClient();
-        //        //client.BaseAddress = new Uri(urlConsulta);
-
-        //        string url = urlConsulta + "subscribers/" + idSuscriber;
-        //        //jsonResponse = Utilidades.GetResponse(url);
-
-        //        HttpResponseMessage response = client.GetAsync(url).Result;
-
-        //        var serializer = new JavaScriptSerializer();
-        //        serializer.RegisterConverters(new[] { new DynamicJsonConverter() });
-        //        dynamic json = serializer.Deserialize(jsonResponse, typeof(object));
-
-
-        //        ClientEntity clienteIds = new ClientEntity();
-        //        if (json.subscriber[0].subscriptions != null)
-        //            clienteIds.AddressId = json.subscriber[0].subscriptions.subscription[0].addressId.ToString();
-        //        clienteIds.IdSuscriber = idSuscriber;
-        //        clienteIds.Json = jsonResponse;
-        //        return clienteIds;
-
-        //    }
-
-        //    catch (Exception ex)
-        //    {
-        //        //WebGestionMovil.Common.Mailer.SendMail(WebGestionMovil.Common.Excepciones.Format(ex), "Error en la ejecución OPEN");
-        //        throw ex;
-        //    }
-        //}
+            return iCReturnData;
+        }
 
         static public DTBRequestEntity GetServiciosActivosForDTB(string idSuscriber)
         {
             string jsonResponse = "";
             try
             {
-                //string url = urlConsulta + "idSubscriber=" + idSuscriber + "&IDdomicilio=" + IDdomicilio;
                 string url = urlConsulta + "products/installedBase?subscriberId=" + idSuscriber + "&isActive=true";
                 jsonResponse = Utilidades.GetResponse(url);
-
-                //DTBResponseEntity response = JsonConvert.DeserializeObject<DTBResponseEntity>(jsonResponse);
 
                 DTBRequestEntity dTBRequestEntity = JsonConvert.DeserializeObject<DTBRequestEntity>(jsonResponse);
 
                 return dTBRequestEntity;
-
-                //var serializer = new JavaScriptSerializer();
-                //serializer.RegisterConverters(new[] { new DynamicJsonConverter() });
-                //dynamic json = serializer.Deserialize(jsonResponse, typeof(object));
-                //string serie = "";
-                //string tipo = "";
-                ////bool encontrado = false;
-                //string jsonSalida = "{\n \"TipoDiagnostico\": \"DTB\",\n";
-                //jsonSalida += "\"SuscriberID\":\"" + idSuscriber + "\",\n";
-                //jsonSalida += "\"AddressId\":\"" + IDdomicilio + "\",\n";
-                //jsonSalida += "\"Productos\":{\n";
-                //jsonSalida += "\"ProductRef\":[\n";
-
-                //for (int i = 0; i < json.subscriptions.subscription[0].products.product.Count; i++)
-                //{
-                //    if (json.subscriptions.subscription[0].products.product[i].addressId.ToString() == IDdomicilio && json.subscriptions.subscription[0].products.product[i].productType != "FLOW APP")
-                //    {
-                //        jsonSalida += "{";
-                //        jsonSalida += "\"Servicio\":\"" + json.subscriptions.subscription[0].products.product[i].productType + "\",\n";
-                //        jsonSalida += "\"Equipos\": {\n";
-                //        jsonSalida += "\"EquipoRef\":[\n ";
-
-                //        for (int x = 0; x < json.subscriptions.subscription[0].products.product[i].components.component.Count; x++)
-                //        {
-                //            string component = json.subscriptions.subscription[0].products.product[i].components.component[x].componentType;
-
-                //            if (component == "Equipo")
-                //            {
-                //                jsonSalida += "{\n";
-                //                jsonSalida += "\"MAC\":\"\", \n";
-                //                jsonSalida += "\"Serial\":\"" + json.subscriptions.subscription[0].products.product[i].components.component[x].serviceNumber + "\",\n";
-                //                if (json.subscriptions.subscription[0].products.product[i].productType == "TELEFONÍA")
-                //                    jsonSalida += "\"NroLinea\":\"" + json.subscriptions.subscription[0].products.product[i].components.component[x].serviceNumber + "\",\n";
-                //                else
-                //                    jsonSalida += "\"NroLinea\":\"\",\n";
-                //                jsonSalida += "\"Tipo Equipo\":\"" + json.subscriptions.subscription[0].products.product[i].components.component[x].classService + "\",\n";
-                //                jsonSalida += "\"Marca\":\"\",\n";
-                //                jsonSalida += "\"Modelo\":\"\"\n";
-
-                //                jsonSalida += "},";
-                //            }
-                //        }
-
-                //        jsonSalida = jsonSalida.Remove(jsonSalida.Length - 1);
-                //        jsonSalida += "]}},";
-                //    }
-                //}
-                //jsonSalida = jsonSalida.Remove(jsonSalida.Length - 1);
-                //jsonSalida += "]\n";
-                //jsonSalida += "}\n";
-                //jsonSalida += "}\n";
-                //ClientEntity clienteIds = new ClientEntity();
-                //clienteIds.AddressId = json.subscriptions.subscription[0].addressId.ToString();
-                //clienteIds.IdSuscriber = idSuscriber;
-                //clienteIds.Json = jsonSalida;
-                //clienteIds.ServiceNumber = serie;
-                //clienteIds.ServiceNumberType = tipo;
-                //return clienteIds;
             }
             catch (Exception ex)
             {
                 //WebGestionMovil.Common.Mailer.SendMail(WebGestionMovil.Common.Excepciones.Format(ex), "Error en la ejecución OPEN");
-
                 throw ex;
             }
         }
