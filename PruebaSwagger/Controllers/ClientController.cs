@@ -65,6 +65,15 @@ namespace PruebaSwagger.Controllers
         [HttpGet]
         public ActionResult<DTBResponseEntity> GetDTB(string idSubscriber, string idDomicilio)
         {
+            try
+            {
+
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
             DTBResponseEntity dTBResponseEntity = new DTBResponseEntity();
             dTBResponseEntity = Business.Integraciones.Integraciones.Integracion_DTB_Programado(idSubscriber, idDomicilio);
 
